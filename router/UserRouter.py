@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Body
 from controller.UserController import UserController
 
 router_user = APIRouter()
@@ -15,3 +15,9 @@ def get_user(id: int):
 @router_user.post("/user/")
 def add_user(user_data: dict):
     return users.add(user_data)
+
+@router_user.put("/user/{id}")
+def update_user(id:int, user_data:dict = Body(...)):
+    return users.update(id, user_data)
+
+

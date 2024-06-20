@@ -21,3 +21,17 @@ class UserController:
 
         except Exception:
             return HTTPException(status_code=409, detail="Email already exists")
+
+    def update(self, user_id:int, user_data:dict):
+        try:
+
+            query = self.UserModel.update(**user_data).where(self.UserModel.id == user_id)
+            query.execute()
+            return self.UserModel.update()
+        except Exception as e:
+
+            if str(e) == 'UNIQUE constraint failed: user.email':
+                raise HTTPException(status_code=409, detail="Email already exists")
+            else:
+                raise HTTPException(status_code=400, detail=str(e))
+
