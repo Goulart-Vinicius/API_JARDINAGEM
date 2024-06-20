@@ -13,11 +13,16 @@ def get_user(id: int):
     return users.get(id)
 
 @router_user.post("/user/")
-def add_user(user_data: dict):
+def add_user(user_data:dict = Body(...)):
     return users.add(user_data)
 
 @router_user.put("/user/{id}")
 def update_user(id:int, user_data:dict = Body(...)):
     return users.update(id, user_data)
+
+@router_user.delete("/user/{id}")
+def delete_user(id:int):
+    return users.delete(id)
+
 
 

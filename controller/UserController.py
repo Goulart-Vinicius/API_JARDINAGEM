@@ -19,12 +19,14 @@ class UserController:
         try:
             return self.UserModel.create(**user_data)
 
-        except Exception:
-            return HTTPException(status_code=409, detail="Email already exists")
+        except Exception as e:
+            if str(e) == 'UNIQUE constraint failed: user.email':
+                raise HTTPException(status_code=409, detail="Email already exists")
+            else:
+                raise HTTPException(status_code=400, detail=str(e))
 
     def update(self, user_id:int, user_data:dict):
         try:
-
             query = self.UserModel.update(**user_data).where(self.UserModel.id == user_id)
             query.execute()
             return self.UserModel.update()
@@ -34,4 +36,15 @@ class UserController:
                 raise HTTPException(status_code=409, detail="Email already exists")
             else:
                 raise HTTPException(status_code=400, detail=str(e))
+
+    def delete(self, user_id):
+        try:
+            user = self.UserModel.get_by_id(user_id)
+
+            user.active = False
+            user.save()
+
+            return {"message": "User deactivated successfully"}
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
 

@@ -9,4 +9,5 @@ class User(BaseModel):
     email = CharField(unique=True)
     password = CharField()
     role = CharField(choices=roles, default='client')
+    active = BooleanField(default=True)
 
