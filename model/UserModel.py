@@ -1,5 +1,6 @@
 from peewee import *
-from model.DataBase import BaseModel, db
+
+from model.DataBase import BaseModel
 
 roles = ('admin', 'functionary', 'client')
 
@@ -10,4 +11,3 @@ class User(BaseModel):
     password = CharField()
     role = CharField(choices=roles, default='client')
     active = BooleanField(default=True)
-
