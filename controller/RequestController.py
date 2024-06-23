@@ -1,20 +1,20 @@
 from fastapi import HTTPException
 
-from model.ServicesModel import Services
-from model.schemas import ServicesSchema
+from model.RequestModel import Request
+from model.schemas import RequestSchema
 
 
-class ServicesController:
+class RequestController:
 
     def __init__(self):
-        self.Services = Services()
+        self.Request = Request()
 
     def get_all(self):
         try:
-            registros_servicos = list(self.Services.select().dicts())
-            servicos = [ServicesSchema.model_validate(registro).model_dump() for registro in registros_servicos]
+            reuests_list = list(self.Request.select().dicts())
+            request = [RequestSchema.model_validate(registro).model_dump() for registro in reuests_list]
 
-            return servicos
+            return request
         except Exception as e:
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -22,18 +22,18 @@ class ServicesController:
         try:
             service = self.Services.get_by_id(id_service)
 
-            return ServicesSchema.model_validate(service).model_dump()
+            return RequestSchema.model_validate(service).model_dump()
 
         except Exception as e:
             if "instance matching query does not exist" in str(e):
                 raise HTTPException(status_code=404, detail='Service not found')
             HTTPException(status_code=500, detail="Internal Server Error")
 
-    def add(self, service: ServicesSchema):
+    def add(self, service: RequestSchema):
         try:
             service_data = service.model_dump()
             service_model = self.Services.create(**service_data)
-            service_validated = ServicesSchema.model_validate(service_model)
+            service_validated = RequestSchema.model_validate(service_model)
             user = service_validated.user
             service_validated.user = user.id
             return service_validated.model_dump()
@@ -42,7 +42,7 @@ class ServicesController:
                 raise HTTPException(status_code=409, detail="Service already exists")
             HTTPException(status_code=500, detail='Internal Server Error')
 
-    def update(self, service_id: int, service_data: ServicesSchema):
+    def update(self, service_id: int, service_data: RequestSchema):
         try:
             service_data = service_data.model_dump()
             service = self.Services.get_by_id(service_id)
@@ -53,7 +53,7 @@ class ServicesController:
             service.user = service_data['user']
 
             service.save()
-            return ServicesSchema.model_validate(self.get(service_id)).model_dump()
+            return RequestSchema.model_validate(self.get(service_id)).model_dump()
         except Exception as e:
 
             if str(e) == 'UNIQUE constraint failed: services.name':

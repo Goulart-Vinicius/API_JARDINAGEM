@@ -6,6 +6,7 @@ from model.schemas import ServicesSchema
 router_services = APIRouter()
 services = ServicesController()
 
+
 @router_services.get("/services/")
 def index():
     return services.get_all()

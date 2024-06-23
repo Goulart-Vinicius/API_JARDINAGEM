@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException
-from model.schemas import UserSchema
+from fastapi import APIRouter
 
 from controller.UserController import UserController
+from model.schemas import UserSchema
 
 router_user = APIRouter()
 users = UserController()

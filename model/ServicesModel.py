@@ -1,6 +1,8 @@
 from peewee import *
-from model.DataBase import BaseModel, db
+
+from model.DataBase import BaseModel
 from model.UserModel import User
+
 roles = ('admin', 'functionary', 'client')
 
 
@@ -10,5 +12,3 @@ class Services(BaseModel):
     time = TimeField()
     active = BooleanField(default=True)
     user = ForeignKeyField(User)
-
-
