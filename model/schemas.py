@@ -43,9 +43,9 @@ class RequestSchema(BaseModel):
     client: Union[User | int]
     date: Union[str, int]
     service: Union[Services | int]
-    Gardner: Union[User | int]
+    gardner: Union[User | int]
 
-    @field_validator('Gardner', mode='before')
+    @field_validator('gardner', mode='before')
     def validate_user(cls, v):
         if isinstance(v, UserSchema):
             return v.id

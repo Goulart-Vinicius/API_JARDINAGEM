@@ -9,5 +9,5 @@ class Request(BaseModel):
     client = ForeignKeyField(User)
     date = DateTimeField()
     service = ForeignKeyField(Services)
-    Gardner = ForeignKeyField(User)
+    gardner = ForeignKeyField(User)
     active = BooleanField(default=True)

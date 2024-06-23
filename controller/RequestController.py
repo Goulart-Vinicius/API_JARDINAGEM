@@ -18,42 +18,48 @@ class RequestController:
         except Exception as e:
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
-    def get(self, id_service: int):
+    def get(self, request_id: int):
         try:
-            service = self.Services.get_by_id(id_service)
+            request = self.Request.get_by_id(request_id)
 
-            return RequestSchema.model_validate(service).model_dump()
+            return RequestSchema.model_validate(request).model_dump()
 
         except Exception as e:
             if "instance matching query does not exist" in str(e):
                 raise HTTPException(status_code=404, detail='Service not found')
             HTTPException(status_code=500, detail="Internal Server Error")
 
-    def add(self, service: RequestSchema):
+    def add(self, request: RequestSchema):
         try:
-            service_data = service.model_dump()
-            service_model = self.Services.create(**service_data)
-            service_validated = RequestSchema.model_validate(service_model)
-            user = service_validated.user
-            service_validated.user = user.id
-            return service_validated.model_dump()
+            request_data = request.model_dump()
+            request_model = self.Request.create(**request_data)
+            request_validated = RequestSchema.model_validate(request_model)
+            service = request_validated.service
+            gardner = request_validated.gardner
+            client = request_validated.client
+
+            request_validated.service = service.id
+            request_validated.gardner = gardner.id
+            request_validated.client = client.id
+
+            return request_validated.model_dump()
         except Exception as e:
             if 'UNIQUE constraint failed: services.name' in str(e):
                 raise HTTPException(status_code=409, detail="Service already exists")
             HTTPException(status_code=500, detail='Internal Server Error')
 
-    def update(self, service_id: int, service_data: RequestSchema):
+    def update(self, request_id: int, request_data: RequestSchema):
         try:
-            service_data = service_data.model_dump()
-            service = self.Services.get_by_id(service_id)
+            request_data = request_data.model_dump()
+            request = self.Request.get_by_id(request_id)
 
-            service.name = service_data['name']
-            service.price = service_data['price']
-            service.time = service_data['time']
-            service.user = service_data['user']
+            request.client = request_data['client']
+            request.date = request_data['date']
+            request.service = request_data['service']
+            request.gardner = request_data['gardner']
 
-            service.save()
-            return RequestSchema.model_validate(self.get(service_id)).model_dump()
+            request.save()
+            return RequestSchema.model_validate(self.get(request_id)).model_dump()
         except Exception as e:
 
             if str(e) == 'UNIQUE constraint failed: services.name':
@@ -61,13 +67,13 @@ class RequestController:
             else:
                 raise HTTPException(status_code=500, detail=str(e))
 
-    def delete(self, service_id: int):
+    def delete(self, request_id: int):
         try:
-            service = self.Services.get_by_id(service_id)
+            request = self.Request.get_by_id(request_id)
 
-            service.active = False
-            service.save()
+            request.active = False
+            request.save()
 
-            return {"message": "Service deactivated successfully"}
+            return {"message": "Request canceled successfully"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
