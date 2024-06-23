@@ -36,7 +36,7 @@ A API de Jardinagem está sendo desenvolvida como um trabalho da matéria de Pro
 - `DELETE /users/{user_id}`: Desativa um usuário pelo ID.
 
 ### Serviços
-- `GET /services/{service_id}`: Obtém todos os serviços.
+- `GET /services/`: Obtém todos os serviços.
 - `GET /services/{service_id}`: Obtém um serviço pelo ID. (Não implementado)
 - `POST /services/`: Adiciona um novo serviço. (Não implementado)
 - `PUT /services/{service_id}`: Atualiza um serviço pelo ID. (Não implementado)
