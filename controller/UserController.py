@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+
 from model.UserModel import User
 from model.schemas import UserSchema
 
@@ -14,7 +15,7 @@ class UserController:
                 raise
             return UserSchema.model_validate(user).model_dump()
         except Exception as error:
-            raise HTTPException(status_code=401, detail="User not found")
+            raise HTTPException(status_code=404, detail="User not found")
 
     def add(self, user_data: UserSchema):
         try:
@@ -26,7 +27,7 @@ class UserController:
             if str(e) == 'UNIQUE constraint failed: user.email':
                 raise HTTPException(status_code=409, detail="Email already exists")
             else:
-                raise HTTPException(status_code=400, detail=str(e))
+                raise HTTPException(status_code=500, detail=str(e))
 
     def update(self, user_id: int, user_data: UserSchema):
         try:
@@ -40,7 +41,7 @@ class UserController:
             if str(e) == 'UNIQUE constraint failed: user.email':
                 raise HTTPException(status_code=409, detail="Email already exists")
             else:
-                raise HTTPException(status_code=400, detail=str(e))
+                raise HTTPException(status_code=500, detail=str(e))
 
     def delete(self, user_id):
         try:
@@ -51,5 +52,4 @@ class UserController:
 
             return {"message": "User deactivated successfully"}
         except Exception as e:
-            raise HTTPException(status_code=400, detail=str(e))
-
+            raise HTTPException(status_code=500, detail=str(e))
