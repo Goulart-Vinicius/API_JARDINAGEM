@@ -4,3 +4,7 @@ banco.db
 __pycache__/app.cpython-311.pyc
 
 controller/__pycache__/
+
+model/__pycache__/DataBase.cpython-311.pyc
+
+*.pyc
