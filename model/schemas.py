@@ -9,6 +9,7 @@ from model.UserModel import User
 
 
 class UserSchema(BaseModel):
+    id: Optional[Union[int | str]] = None
     name: str
     email: str
     password: str
@@ -19,6 +20,7 @@ class UserSchema(BaseModel):
 
 
 class ServicesSchema(BaseModel):
+    id: Optional[Union[int | str]] = None
     name: str
     price: float
     time: time
@@ -40,8 +42,9 @@ class DateTime:
 
 
 class RequestSchema(BaseModel):
+    id: Optional[Union[int | str]] = None
     client: Union[User | int]
-    date: Union[str, int]
+    date: Union[str | DateTime]
     service: Union[Services | int]
     gardner: Union[User | int]
 
@@ -64,11 +67,22 @@ class RequestSchema(BaseModel):
         return v
 
     @field_validator('date', mode='before')
-    def validate_user(cls, v):
+    def validate_date(cls, v):
         if isinstance(v, int):
-            # Convert timestamp (milliseconds) to ISO 8601 format string
-            return datetime.datetime.fromtimestamp(v / 1000).isoformat()
-        return v
+            return datetime.datetime.fromtimestamp(v / 1000).strftime('%d/%m/%y')
+        elif isinstance(v, datetime.datetime):
+            return v.strftime('%d/%m/%y')
+        elif isinstance(v, str):
+            try:
+                datetime.datetime.strptime(v, '%d/%m/%y')
+                return v
+            except ValueError:
+                try:
+                    datetime.datetime.strptime(v, '%d/%m/%Y')
+                    return v
+                except ValueError:
+                    raise ValueError("Input should be a valid date in DD/MM/YY or DD/MM/YYYY format")
+        raise ValueError("Input should be a valid date format")
 
     class Config:
         from_attributes = True
