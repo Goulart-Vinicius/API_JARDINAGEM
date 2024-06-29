@@ -14,7 +14,7 @@ class UserController:
             if user.active is False:
                 raise
             return UserSchema.model_validate(user).model_dump()
-        except Exception as error:
+        except:
             raise HTTPException(status_code=404, detail="User not found")
 
     def add(self, user_data: UserSchema):

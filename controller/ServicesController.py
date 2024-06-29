@@ -11,11 +11,12 @@ class ServicesController:
 
     def get_all(self):
         try:
-            registros_servicos = list(self.Services.select().dicts())
+            query = self.Services.select().where(Services.active == True)
+            registros_servicos = list(query.dicts())
             servicos = [ServicesSchema.model_validate(registro).model_dump() for registro in registros_servicos]
 
             return servicos
-        except Exception as e:
+        except:
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
     def get(self, id_service: int):
@@ -71,3 +72,10 @@ class ServicesController:
             return {"message": "Service deactivated successfully"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+    def get_by_name(self, name):
+        try:
+            service = self.Services.select().where(self.Services.name == name).get()
+            return ServicesSchema.model_validate(service).model_dump()
+        except Exception as e:
+            HTTPException(status_code=500, detail=str(e))

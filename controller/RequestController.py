@@ -15,7 +15,7 @@ class RequestController:
             request = [RequestSchema.model_validate(registro).model_dump() for registro in reuests_list]
 
             return request
-        except Exception as e:
+        except:
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
     def get(self, request_id: int):
