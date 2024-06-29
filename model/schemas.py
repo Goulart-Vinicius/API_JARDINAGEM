@@ -9,7 +9,6 @@ from model.UserModel import User
 
 
 class UserSchema(BaseModel):
-    id: int | None
     name: str
     email: str
     password: str
@@ -20,14 +19,13 @@ class UserSchema(BaseModel):
 
 
 class ServicesSchema(BaseModel):
-    id: int | None
     name: str
     price: float
     time: time
     user: Union[User | int]
 
     @field_validator('user', mode='before')
-    def validate_user(self, v):
+    def validate_user(cls, v):
         if isinstance(v, UserSchema):
             return v.id
         return v
@@ -42,32 +40,31 @@ class DateTime:
 
 
 class RequestSchema(BaseModel):
-    id: int | None
     client: Union[User | int]
     date: Union[str, int]
     service: Union[Services | int]
     gardner: Union[User | int]
 
     @field_validator('gardner', mode='before')
-    def validate_user(self, v):
+    def validate_user(cls, v):
         if isinstance(v, UserSchema):
             return v.id
         return v
 
     @field_validator('service', mode='before')
-    def validate_user(self, v):
+    def validate_user(cls, v):
         if isinstance(v, ServicesSchema):
             return v.id
         return v
 
     @field_validator('client', mode='before')
-    def validate_user(self, v):
+    def validate_user(cls, v):
         if isinstance(v, UserSchema):
             return v.id
         return v
 
     @field_validator('date', mode='before')
-    def validate_user(self, v):
+    def validate_user(cls, v):
         if isinstance(v, int):
             # Convert timestamp (milliseconds) to ISO 8601 format string
             return datetime.datetime.fromtimestamp(v / 1000).isoformat()
